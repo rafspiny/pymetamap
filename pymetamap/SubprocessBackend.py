@@ -24,6 +24,7 @@ class SubprocessBackend(MetaMap):
         MetaMap.__init__(self, metamap_filename, version)
 
     def extract_concepts(self, sentences=None, ids=None,
+                         restrict_to_semantic_types=None, excludes_semantic_types=None,
                          composite_phrase=4, filename=None,
                          file_format='sldi', allow_acronym_variants=False,
                          word_sense_disambiguation=False, allow_large_n=False,
@@ -37,6 +38,8 @@ class SubprocessBackend(MetaMap):
             MetaMap.
 
             Supported Options:
+                Restrict to Semantic Types -J <comma-separated-list-of-semantic-types>
+                Exclude Specific Semantic Types -k <comma-separated-list-of-semantic-types>
                 Composite Phrase -Q
                 Word Sense Disambiguation -y
                 allow large N -l
@@ -106,6 +109,10 @@ class SubprocessBackend(MetaMap):
                 command.append('-K')
             if compute_all_mappings:
                 command.append('-b')
+            if restrict_to_semantic_types is not None and len(restrict_to_semantic_types) > 0:
+                command.append('-J %s' % ','.join(restrict_to_semantic_types))
+            if excludes_semantic_types is not None and len(excludes_semantic_types) > 0:
+                command.append('-k %s' % ','.join(excludes_semantic_types))
             if ids is not None or (file_format == 'sldiID' and
                     sentences is None):
                 command.append('--sldiID')
